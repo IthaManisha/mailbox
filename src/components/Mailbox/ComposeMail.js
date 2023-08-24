@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from "draft-js";
+import { useSelector } from "react-redux";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const ComposeMail = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [recipient, setRecipient] = useState("");
   const [subject, setSubject] = useState("");
+  const senderEmail=useSelector(state=>state.auth.email)
 
   const handleRecipientChange = (event) => {
     setRecipient(event.target.value);
@@ -52,10 +54,10 @@ const ComposeMail = () => {
     
     try {
       // Send email
-      await sendEmail(recipient, "sender@example.com", subject, contentRaw);
+      await sendEmail(recipient,senderEmail, subject, contentRaw);
       
       // Store a copy in sender's "sentbox"
-      await sendEmail("sender@example.com", recipient, subject, contentRaw);
+      await sendEmail(senderEmail, recipient, subject, contentRaw);
   
       // Clear form fields
       setRecipient("");
@@ -72,25 +74,27 @@ const ComposeMail = () => {
       <h2>Compose Email</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>To:</label>
+          <label>To:</label><br/>
           <input
             type="email"
             value={recipient}
             onChange={handleRecipientChange}
+            style={{width:'80%',height:'30px',borderRadius:'8px',background:'rgb(248, 245, 245)'}}
             required
           />
         </div>
         <div>
-          <label>Subject:</label>
+          <label>Subject:</label><br/>
           <input
             type="text"
             value={subject}
             onChange={handleSubjectChange}
+            style={{width:'80%',height:'30px',borderRadius:'8px',background:'rgb(248, 245, 245)'}}
             required
           />
         </div>
         <div>
-          <label>Message:</label>
+          <label>Body:</label>
           <Editor
             editorState={editorState}
             onEditorStateChange={setEditorState}
