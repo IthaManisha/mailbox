@@ -69,7 +69,7 @@ export default Inbox;*/
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Card from "../UI/Card";
-import { setInboxEmails, markEmailAsRead } from "../store/inbox";
+import { setInboxEmails, markEmailAsRead,deleteEmail} from "../store/inbox";
 
 const Inbox = () => {
   const [expandedEmail, setExpandedEmail] = useState(false);
@@ -139,6 +139,17 @@ const Inbox = () => {
         console.error("Error marking email as read in Firebase:", error);
       }
   };
+
+  const deleteHandler=async(firebaseKey)=>{
+    dispatch(deleteEmail(firebaseKey));
+    try{
+      await fetch(`https://login-4cf44-default-rtdb.firebaseio.com/emails/${firebaseKey}.json`,{
+        method:"DELETE"
+      })
+    }catch(error){
+      console.error("Error deleting in Firebase:", error);
+    }
+  }
   
 
   return (
@@ -160,6 +171,7 @@ const Inbox = () => {
                 <strong>Message:</strong> {email.content}
               </div>
             )}
+            <button onClick={()=>deleteHandler(email.firebaseKey)}>Delete</button>
           </Card>
         ))}
       </ul>

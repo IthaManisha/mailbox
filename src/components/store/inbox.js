@@ -17,8 +17,12 @@ const inboxSlice = createSlice({
     addNewEmail: (state, action) => {
         state.push(action.payload);
       },
+      deleteEmail:(state,action)=>{
+        const firebaseKeyToDelete = action.payload;
+        return state.filter((email)=>email.firebaseKey!==firebaseKeyToDelete)
+      }
   },
 });
 
-export const { setInboxEmails, markEmailAsRead,addNewEmail } = inboxSlice.actions;
+export const { setInboxEmails, markEmailAsRead,addNewEmail,deleteEmail } = inboxSlice.actions;
 export default inboxSlice.reducer;
