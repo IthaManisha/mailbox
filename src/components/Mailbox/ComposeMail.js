@@ -4,6 +4,7 @@ import { EditorState, convertToRaw } from "draft-js";
 import { useSelector ,useDispatch} from "react-redux";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {addNewEmail} from '../store/inbox'
+import { addNewSentEmail } from "../store/sentbox";
 
 const ComposeMail = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -22,6 +23,7 @@ const ComposeMail = () => {
   const sendEmail = async (recipient, sender, subject, content) => {
     const EmailData={
         recipient: recipient,
+        type: "sent", 
         sender: sender,
         subject: subject,
         content: content,
@@ -54,6 +56,43 @@ const ComposeMail = () => {
       throw error;
     }
 };
+
+const ReceiveEmail = async (recipient, sender, subject, content) => {
+  const EmailData={
+      recipient: recipient,
+      type: "receive", 
+      sender: sender,
+      subject: subject,
+      content: content,
+      isNew: true, 
+      timestamp: new Date().toISOString()
+  }
+  try {
+    const response = await fetch(
+      'https://login-4cf44-default-rtdb.firebaseio.com/emails.json', // Replace with your Firebase URL
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(EmailData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to send email.');
+    }
+
+    const responseData = await response.json();
+    
+    dispatch(addNewSentEmail(responseData));
+    
+    return responseData;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
+};
   const handleSubmit = async (event) => {
     event.preventDefault();
     const content = editorState.getCurrentContent();
@@ -61,7 +100,7 @@ const ComposeMail = () => {
     
     try {
       // Send email
-      await sendEmail(recipient,senderEmail, subject, contentRaw);
+      await ReceiveEmail(recipient,senderEmail, subject, contentRaw);
       
       // Store a copy in sender's "sentbox"
       await sendEmail(senderEmail, recipient, subject, contentRaw);

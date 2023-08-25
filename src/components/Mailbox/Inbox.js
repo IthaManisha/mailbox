@@ -96,11 +96,13 @@ const Inbox = () => {
       const emailsData = await response.json();
       
         const inboxEmails = Object.keys(emailsData)
-        .filter((key) => emailsData[key].recipient === userEmail)
+        .filter((key) => emailsData[key].recipient === userEmail && emailsData[key].type === "receive")
         .map((key) => ({
             firebaseKey: key,
             ...emailsData[key]
         }));
+        
+        
          
        
         
