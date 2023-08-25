@@ -13,7 +13,7 @@ const GmailApp = () => {
   const inboxToggle=()=>{
     setShowInbox(!showInbox);
   }
-
+   
   return (
     <div style={{}}>
       <div>
@@ -22,7 +22,7 @@ const GmailApp = () => {
       </div>
       <div>
       <button onClick={inboxToggle}>Inbox</button>
-      {showInbox ? <Inbox/> : null}
+      {showInbox ? <Inbox /> : null}
       </div>
       
     </div>

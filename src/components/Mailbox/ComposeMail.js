@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from "draft-js";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch} from "react-redux";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import {addNewEmail} from '../store/inbox'
 
 const ComposeMail = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [recipient, setRecipient] = useState("");
   const [subject, setSubject] = useState("");
   const senderEmail=useSelector(state=>state.auth.email)
+  const dispatch=useDispatch()
 
   const handleRecipientChange = (event) => {
     setRecipient(event.target.value);
@@ -18,6 +20,14 @@ const ComposeMail = () => {
     setSubject(event.target.value);
   };
   const sendEmail = async (recipient, sender, subject, content) => {
+    const EmailData={
+        recipient: recipient,
+        sender: sender,
+        subject: subject,
+        content: content,
+        isNew: true, 
+        timestamp: new Date().toISOString()
+    }
     try {
       const response = await fetch(
         'https://login-4cf44-default-rtdb.firebaseio.com/emails.json', // Replace with your Firebase URL
@@ -26,13 +36,7 @@ const ComposeMail = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            recipient: recipient,
-            sender: sender,
-            subject: subject,
-            content: content,
-            timestamp: new Date().toISOString(),
-          }),
+          body: JSON.stringify(EmailData),
         }
       );
 
@@ -41,6 +45,9 @@ const ComposeMail = () => {
       }
 
       const responseData = await response.json();
+      
+      dispatch(addNewEmail(responseData));
+      
       return responseData;
     } catch (error) {
       console.error('Error sending email:', error);
