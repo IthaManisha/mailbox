@@ -1,8 +1,7 @@
-import './App.css';
 import AuthForm from './components/Auth/AuthForm';
 import Home from './components/Home/Home';
-import auth from './components/store/auth';
 import { useSelector} from 'react-redux';
+import './App.css'
 
 function App() {
   const token=useSelector(state=>state.auth.token)
@@ -10,8 +9,13 @@ function App() {
   console.log(islogin)
   return (
     <>
-    {!islogin && <AuthForm/>}
-    {islogin && <Home/>}
+      {!islogin && 
+        <div className="expense-container">
+          <AuthForm/>
+        </div>
+      }
+  
+      {islogin && <Home/>}
     </>
   );
 }

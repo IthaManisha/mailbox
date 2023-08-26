@@ -125,7 +125,7 @@ const ReceiveEmail = async (recipient, sender, subject, content) => {
             type="email"
             value={recipient}
             onChange={handleRecipientChange}
-            style={{width:'80%',height:'30px',borderRadius:'8px',background:'rgb(248, 245, 245)'}}
+            style={{width:'50%',height:'30px',borderRadius:'8px',background:'rgb(248, 245, 245)'}}
             required
           />
         </div>
@@ -135,11 +135,11 @@ const ReceiveEmail = async (recipient, sender, subject, content) => {
             type="text"
             value={subject}
             onChange={handleSubjectChange}
-            style={{width:'80%',height:'30px',borderRadius:'8px',background:'rgb(248, 245, 245)'}}
+            style={{width:'50%',height:'30px',borderRadius:'8px',background:'rgb(248, 245, 245)'}}
             required
           />
         </div>
-        <div>
+        <div style={{ marginTop: '20px', border: '1px solid #ccc',marginLeft:'20px',marginRight:'25%'}}>
           <label>Body:</label>
           <Editor
             editorState={editorState}
@@ -152,10 +152,12 @@ const ReceiveEmail = async (recipient, sender, subject, content) => {
               history: { inDropdown: true }, // Undo and Redo
             }}
           />
+          <div>
+          <button type="submit" 
+          style={{marginTop:'25%',padding:'8px',borderRadius:'8px',background:'rgb(41, 41, 252)',color:'white'}}>Send</button>
         </div>
-        <div>
-          <button type="submit">Send</button>
         </div>
+        
       </form>
     </div>
   );
